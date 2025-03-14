@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>com.rakensi</groupId>
+  <artifactId>basex-tixml-xar</artifactId>
+  <version>1.0.0</version>
+
+  <name>Transparent Invisible XML for BaseX</name>
+  <description>Transparent Invisible XML (tixml) for BaseX</description>
+  <url>https://github.com/nverwer/basex-tixml-xar</url>
+
+  <organization>
+      <name>Rakensi</name>
+      <url>http://rakensi.com</url>
+  </organization>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.release>11</maven.compiler.release>
+
+    <basex.version>11.0</basex.version>
+
+    <smax.groupId>org.greenmercury</smax.groupId>
+    <smax.artifactId>SMAX</smax.artifactId>
+    <smax.version>1.0.3</smax.version>
+
+    <markup-blitz.groupId>de.bottlecaps</markup-blitz.groupId>
+    <markup-blitz.artifactId>markup-blitz</markup-blitz.artifactId>
+    <markup-blitz.version>1.4</markup-blitz.version>
+
+  </properties>
+
+  <dependencies>
+    
+    <dependency>
+      <groupId>org.basex</groupId>
+      <artifactId>basex</artifactId>
+      <version>${basex.version}</version>
+    </dependency>
+        
+    <dependency>
+      <groupId>${smax.groupId}</groupId>
+      <artifactId>${smax.artifactId}</artifactId>
+      <version>${smax.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>${markup-blitz.groupId}</groupId>
+      <artifactId>${markup-blitz.artifactId}</artifactId>
+      <version>${markup-blitz.version}</version>
+    </dependency>
+
+</dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>org.greenmercury.basex.modules.TransparentInvisibleXMLModule</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>${smax.groupId}:${smax.artifactId}</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <configuration>
+              <useAgent>true</useAgent>
+          </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+              <mavenExecutorId>forked-path
+              </mavenExecutorId> <!-- avoid a bug with GPG plugin hanging http://jira.codehaus.org/browse/MGPG-9 -->
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <tagNameFormat>@{project.version}</tagNameFormat>
+          </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
